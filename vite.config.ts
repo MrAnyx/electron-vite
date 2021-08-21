@@ -9,6 +9,7 @@ const pathResolve = (dir: string) => resolve(__dirname, ".", dir);
  * @type {import('vite').UserConfig}
  */
 export default defineConfig({
+   base: process.env.ELECTRON === "true" ? "./" : ".",
    plugins: [vue()],
    resolve: {
       alias: {

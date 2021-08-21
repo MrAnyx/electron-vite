@@ -1,33 +1,71 @@
 {
-  "name": "electron-vite",
-  "version": "0.0.0",
-  "main": "main.ts",
-  "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview",
-    "electron:start": "electron ."
-  },
-  "dependencies": {
-    "@vitejs/plugin-vue": "^1.4.0",
-    "vite": "^2.5.0",
-    "vue": "^3.0.5"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.29.2",
-    "@typescript-eslint/parser": "^4.29.2",
-    "@vue/compiler-sfc": "^3.0.5",
-    "electron": "^13.2.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-import-resolver-typescript": "^2.4.0",
-    "eslint-plugin-import": "^2.24.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^7.16.0",
-    "nodemon": "^2.0.12",
-    "prettier": "^2.3.2",
-    "typescript": "^4.3.2",
-    "vue-tsc": "^0.2.2"
-  }
+   "name": "electron-vite",
+   "version": "0.0.0",
+   "author": "MrAnyx",
+   "main": "electron/main.ts",
+   "scripts": {
+      "dev": "vite",
+      "build": "vue-tsc --noEmit && vite build",
+      "serve": "vite preview",
+      "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
+      "electron:pack": "electron-builder --dir",
+      "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron\"",
+      "electron:builder": "electron-builder",
+      "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
+      "app:build": "npm run build:for:electron && npm run electron:builder"
+   },
+   "dependencies": {
+      "@vitejs/plugin-vue": "^1.4.0",
+      "dotenv": "^10.0.0",
+      "vite": "^2.5.0",
+      "vue": "^3.0.5"
+   },
+   "devDependencies": {
+      "@typescript-eslint/eslint-plugin": "^4.29.2",
+      "@typescript-eslint/parser": "^4.29.2",
+      "@vue/compiler-sfc": "^3.0.5",
+      "concurrently": "^6.2.1",
+      "cross-env": "^7.0.3",
+      "electron": "^13.2.1",
+      "electron-builder": "^22.11.7",
+      "eslint": "^7.32.0",
+      "eslint-config-airbnb-base": "^14.2.1",
+      "eslint-config-prettier": "^8.3.0",
+      "eslint-import-resolver-typescript": "^2.4.0",
+      "eslint-plugin-import": "^2.24.0",
+      "eslint-plugin-prettier": "^3.4.0",
+      "eslint-plugin-vue": "^7.16.0",
+      "prettier": "^2.3.2",
+      "typescript": "^4.3.2",
+      "vue-tsc": "^0.2.2",
+      "wait-on": "^6.0.0"
+   },
+   "build": {
+      "appId": "com.my-website.my-app",
+      "productName": "electron-vite",
+      "copyright": "Copyright © 2019 ${author}",
+      "mac": {
+         "category": "public.app-category.utilities"
+      },
+      "win": {
+         "target": "nsis"
+      },
+      "nsis": {
+         "oneClick": false,
+         "allowToChangeInstallationDirectory": true
+      },
+      "linux": {
+         "target": "deb",
+         "maintainer": "test@mail.com",
+         "executableName": "electron-vite-cool"
+      },
+      "files": [
+         "dist/**/*",
+         "electron/**/*"
+      ],
+      "directories": {
+         "buildResources": "assets",
+         "output": "dist_electron"
+      }
+   }
 }
