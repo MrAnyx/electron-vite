@@ -2,6 +2,12 @@
    "name": "electron-vite",
    "version": "0.0.0",
    "author": "MrAnyx",
+   "contributors": [
+      {
+         "name": "Robin B",
+         "email": "test@mail.com"
+      }
+   ],
    "main": "electron/main.ts",
    "scripts": {
       "dev": "vite",
@@ -10,9 +16,10 @@
       "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
       "electron:pack": "electron-builder --dir",
       "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron\"",
-      "electron:builder": "electron-builder",
+      "electron:builder": "electron-builder -wl",
       "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
-      "app:build": "npm run build:for:electron && npm run electron:builder"
+      "app:build": "npm run build:for:electron && npm run electron:builder",
+      "app:pack": "npm run build:for:electron && electron-packager . build/packager/electron-vite --all --asar --ignore=.gitignore"
    },
    "dependencies": {
       "@vitejs/plugin-vue": "^1.4.0",
@@ -28,6 +35,7 @@
       "cross-env": "^7.0.3",
       "electron": "^13.2.1",
       "electron-builder": "^22.11.7",
+      "electron-packager": "^15.3.0",
       "eslint": "^7.32.0",
       "eslint-config-airbnb-base": "^14.2.1",
       "eslint-config-prettier": "^8.3.0",
@@ -41,23 +49,43 @@
       "wait-on": "^6.0.0"
    },
    "build": {
-      "appId": "com.my-website.my-app",
-      "productName": "electron-vite",
-      "copyright": "Copyright © 2019 ${author}",
-      "mac": {
-         "category": "public.app-category.utilities"
+      "productName": "Electron vite",
+      "copyright": "Copyright © 2021 ${author}",
+      "appId": "electron-vite",
+      "artifactName": "${productName}_Installer_${version}_${os}_${arch}.${ext}",
+      "extraResources": "pluginsDist",
+      "asar": true,
+      "icon": "public/icon.png",
+      "dmg": {
+         "contents": [
+            {
+               "x": 240,
+               "y": 150,
+               "type": "link",
+               "path": "/Applications"
+            }
+         ]
+      },
+      "linux": {
+         "icon": "assets/building/linux",
+         "category": "Development",
+         "maintainer": "test@mail.com",
+         "target": [
+            "AppImage",
+            "deb"
+         ]
       },
       "win": {
-         "target": "nsis"
+         "icon": "public/icon.ico",
+         "target": [
+            {
+               "target": "nsis"
+            }
+         ]
       },
       "nsis": {
          "oneClick": false,
          "allowToChangeInstallationDirectory": true
-      },
-      "linux": {
-         "target": "deb",
-         "maintainer": "test@mail.com",
-         "executableName": "electron-vite-cool"
       },
       "files": [
          "dist/**/*",
@@ -65,7 +93,7 @@
       ],
       "directories": {
          "buildResources": "assets",
-         "output": "dist_electron"
+         "output": "build/builder"
       }
    }
 }
